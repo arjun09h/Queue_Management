@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import QueueDisplay from "./components/QueueDisplay";
+import QueueForm from "./components/QueueForm";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useState } from "react";
+export default function App() {
+  const[queue,setQueue] = useState([]);
+
+  const addToQueue = (customer)=>{
+    setQueue([...queue,{...customer,id:Date.now(), status:"waiting"}])
+  };
+  const updateStatus = (id,newStatus)=>{
+    setQueue(queue.map(customer => 
+      customer.id === id ? {...customer,status:newStatus}:customer
+    ))
+  }
+  const removeFromQueue = (id)=>{
+    setQueue(queue.filter(customer => customer.id !== id ))
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <header>
+        <h1>Queue Management App</h1>
+        <p>Manage Your Customers Efficiently</p>
+      </header>
+      <main>
+        <QueueForm addTo={addToQueue} className="card"/>
+        <QueueDisplay 
+        queue = {queue}
+        onUpdateStatus = {updateStatus}
+        onRemove = {removeFromQueue}
+        />
+      </main>
+    </div>
   )
 }
-
-export default App
